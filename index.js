@@ -1,20 +1,25 @@
 const canvas= document.querySelector('#myCanvas')
 const ctx= canvas.getContext('2d')
 
-const drawingElements=()=>{
-// drawing the paddle
-    ctx.beginPath();
-    ctx.rect(20,40,50,50);
-    ctx.fillStyle='black';
-    ctx.fill();
-    ctx.closePath()
+let xPosition= canvas.width/2
+let yPosition= canvas.height-30
+const dx=2
+const dy=-2
 
-    //drawing the ball
+const drawBall=()=>{
     ctx.beginPath();
-    ctx.arc(240, 160, 20, 0, Math.PI*2, false);
+    ctx.arc(xPosition, yPosition, 20, 0, Math.PI*2, false);
     ctx.fillStyle='red';
     ctx.fill();
     ctx.closePath()
 }
 
-drawingElements()
+
+const startGame=()=>{
+    ctx.clearRect(0,0,canvas.width,canvas.height)
+   drawBall()
+    xPosition+=dx;
+    yPosition+=dy
+}
+
+setInterval(startGame, 10);
