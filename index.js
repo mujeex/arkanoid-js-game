@@ -62,9 +62,18 @@ const startGame=()=>{
     dx = -dx;
 }
 // checking for collision for top and bottom
-   if(yPosition + dy < ballRadius||yPosition+dy>canvas.height-ballRadius) {
+   if(yPosition + dy < ballRadius) {
        console.log('fired!')
     dy = -dy;
+   }else if(yPosition+dy>canvas.height-ballRadius){
+       if(xPosition>paddleX && xPosition< paddleX+ paddleWidth){
+           dy= -dy
+       }else{
+        alert("GAME OVER!")
+    document.location.reload()
+    clearInterval(interval)
+       }
+    
    }
    //changing the position of the ball each time the canvas repaints
     xPosition+=dx;
@@ -76,11 +85,12 @@ const startGame=()=>{
     }else if(leftPressed&& paddleX>0){
         paddleX-=7
     }
-   requestAnimationFrame(startGame)
+
 }
 
 document.addEventListener('keydown',keyDownHandler,false)
 document.addEventListener('keyup',keyUpHandler,false)
-requestAnimationFrame(startGame)
+
+const interval= setInterval(startGame, 10);
 
 // console.log(canvas.width,canvas.height)
