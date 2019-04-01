@@ -25,6 +25,9 @@ const brickPadding = 10;
 const brickOffsetTop= 30;
 const brickOffsetLeft= 30;
 
+//variable for keeping track of the score
+let score=0;
+
 //creating brick objects
 const bricks=[]
 for(let c=0; c<brickColumnCount;c++){
@@ -103,11 +106,24 @@ const collisionDetection=()=>{
                     dy = -dy;
                     b.status=0;
                     drawBall(color='red');
+                    score++
+                    if(score== brickRowCount*brickColumnCount){
+                        alert('YOU WIN, CONGRATULATIONS!!')
+                        document.location.reload();
+                        clearInterval(interval) //needed for chrome to end the game.
+                    }
                 }
             }
             
         }
     }
+}
+
+//drawing the score on the canvas
+const drawScore= ()=>{
+    ctx.font = '16px Arial';
+    ctx.fillStyle= '#0095DD'
+    ctx.fillText('Score: '+ score, 8, 20)
 }
 
 
@@ -117,6 +133,7 @@ const startGame=()=>{
     drawBricks()
    drawBall(color)
    drawPaddle()
+   drawScore()
    //checking for collison between bricks
    collisionDetection()
    
