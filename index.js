@@ -7,6 +7,7 @@ let yPosition= canvas.height-30;
 let dx=2;
 let dy= -2;
 const ballRadius=10;
+let color='blue'
 
 //variables for paddle
 const paddleWidth=75;
@@ -29,31 +30,36 @@ const bricks=[]
 for(let c=0; c<brickColumnCount;c++){
     bricks[c]=[];
     for(let r=0; r<brickRowCount; r++){
-        bricks[c][r]={x:0,y:0}
+        bricks[c][r]={x:0,y:0,status:1}
     }
 }
 
 //drawing the bricks to the canvas
-const drawBricks=()=> {
+const drawBricks =()=> {
     for(let c=0; c<brickColumnCount; c++) {
         for(let r=0; r<brickRowCount; r++) {
-            let brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
-            let brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
-            bricks[c][r].x = 0;
-            bricks[c][r].y = 0;
-            ctx.beginPath();
-            ctx.rect(brickX, brickY, brickWidth, brickHeight);
-            ctx.fillStyle = "#0095DD";
-            ctx.fill();
-            ctx.closePath();
+            if(bricks[c][r].status==1){
+                let brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
+                let brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
+                bricks[c][r].x = brickX;
+                bricks[c][r].y = brickY;
+                ctx.beginPath();
+                ctx.rect(brickX, brickY, brickWidth, brickHeight);
+                ctx.fillStyle = "#0095DD";
+                ctx.fill();
+                ctx.closePath();
+            }
+          
         }
     }
 }
 
-const drawBall=()=>{
+
+
+const drawBall=(color)=>{
     ctx.beginPath();
     ctx.arc(xPosition, yPosition, ballRadius, 0, Math.PI*2, false);
-    ctx.fillStyle='red';
+    ctx.fillStyle=color;
     ctx.fill();
     ctx.closePath()
 }
@@ -85,20 +91,41 @@ const keyUpHandler= (event)=>{
     
 }
 
+//collision detection function
+const collisionDetection=()=>{
+    for(let c=0; c<brickColumnCount;c++){
+        for(let r=0; r<brickRowCount;r++){
+            let b= bricks[c][r]
+            if(b.status== 1){
+                //changing status of brick , direction and color of the ball upon collision.
+                if(xPosition > b.x && xPosition < b.x+brickWidth && yPosition > b.y && yPosition < b.y+brickHeight) {
+                    console.log('here')
+                    dy = -dy;
+                    b.status=0;
+                    drawBall(color='red');
+                }
+            }
+            
+        }
+    }
+}
+
 
 
 const startGame=()=>{
     ctx.clearRect(0,0,canvas.width,canvas.height)
-   drawBall()
-   drawPaddle()
     drawBricks()
+   drawBall(color)
+   drawPaddle()
+   //checking for collison between bricks
+   collisionDetection()
+   
  // checking for collision for left and right side
  if( xPosition + dx < ballRadius || xPosition + dx > canvas.width-ballRadius) {
     dx = -dx;
 }
 // checking for collision for top and bottom
    if(yPosition + dy < ballRadius) {
-       console.log('fired!')
     dy = -dy;
    }else if(yPosition+dy>canvas.height-ballRadius){
        if(xPosition>paddleX && xPosition< paddleX+ paddleWidth){
@@ -120,6 +147,8 @@ const startGame=()=>{
     }else if(leftPressed&& paddleX>0){
         paddleX-=7
     }
+
+    
 
 }
 
