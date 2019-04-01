@@ -126,6 +126,13 @@ const drawScore= ()=>{
     ctx.fillText('Score: '+ score, 8, 20)
 }
 
+const mousemoveHandler= (event)=>{
+    let relativeX= event.clientX- canvas.offsetLeft
+    if(relativeX > 0 && relativeX < canvas.width){
+        paddleX = relativeX- paddleWidth/2
+    }
+}
+
 
 
 const startGame=()=>{
@@ -171,6 +178,7 @@ const startGame=()=>{
 
 document.addEventListener('keydown',keyDownHandler,false)
 document.addEventListener('keyup',keyUpHandler,false)
+document.addEventListener('mousemove',mousemoveHandler,false)
 
 const interval= setInterval(startGame, 10);
 
