@@ -27,6 +27,8 @@ const brickOffsetLeft= 30;
 
 //variable for keeping track of the score
 let score=0;
+//variable for lives
+let lives=3;
 
 //creating brick objects
 const bricks=[]
@@ -110,7 +112,7 @@ const collisionDetection=()=>{
                     if(score== brickRowCount*brickColumnCount){
                         alert('YOU WIN, CONGRATULATIONS!!')
                         document.location.reload();
-                        clearInterval(interval) //needed for chrome to end the game.
+                        // clearInterval(interval) //needed for chrome to end the game.
                     }
                 }
             }
@@ -126,11 +128,18 @@ const drawScore= ()=>{
     ctx.fillText('Score: '+ score, 8, 20)
 }
 
+//Handling mouse-events
 const mousemoveHandler= (event)=>{
     let relativeX= event.clientX- canvas.offsetLeft
     if(relativeX > 0 && relativeX < canvas.width){
         paddleX = relativeX- paddleWidth/2
     }
+}
+
+const drawLives=()=>{
+    ctx.font= '16px Arial';
+    ctx.fillStyle= '#0095DD';
+    ctx.fillText('Lives: '+ lives, canvas.width-65, 20)
 }
 
 
@@ -141,6 +150,7 @@ const startGame=()=>{
    drawBall(color)
    drawPaddle()
    drawScore()
+   drawLives()
    //checking for collison between bricks
    collisionDetection()
    
@@ -155,10 +165,19 @@ const startGame=()=>{
        if(xPosition>paddleX && xPosition< paddleX+ paddleWidth){
            dy= -dy
        }else{
-        alert("GAME OVER!")
-    document.location.reload()
-    clearInterval(interval)
-       }
+           lives--;
+           if(!lives){
+            alert("GAME OVER!")
+            document.location.reload()
+               }else{
+                   xPosition=canvas.width/2;
+                   yPosition=canvas.height-30;
+                   dx= 2;
+                   dy = -2;
+                   paddleX= (canvas.width-paddleWidth)/2
+               }
+           }
+      
     
    }
    //changing the position of the ball each time the canvas repaints
@@ -174,12 +193,13 @@ const startGame=()=>{
 
     
 
+    requestAnimationFrame(startGame)
 }
 
 document.addEventListener('keydown',keyDownHandler,false)
 document.addEventListener('keyup',keyUpHandler,false)
 document.addEventListener('mousemove',mousemoveHandler,false)
+startGame()
 
-const interval= setInterval(startGame, 10);
 
 // console.log(canvas.width,canvas.height)
